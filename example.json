@@ -63,14 +63,12 @@
       "loglevel": "error"
     },
     "dns": {
-      "disableFallback": true,
+      "disableFallback": false,
       "queryStrategy": "UseIPv4",
-      "disableFallbackIfMatch": true,
       "servers": [
 	  {
 		  "port": 53,
 		  "address": "119.29.29.29",
-		  "skipFallback": true,
 		  "domains": [
 		      "geosite:cn"
 		  ],
@@ -90,7 +88,7 @@
         },
 		"tcp:\/\/8.8.8.8:53"
       ],
-      "disableCache": false,
+      "disableCache": true,
       "tag": "dns-in1"
     },
     "policy": {
@@ -115,6 +113,19 @@
           "type": "field",
           "protocol": [
             "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "pt.skyey.win",
+            "probe.skyey2.com",
+            "t.audiences.me",
+            "t.pthome.net",
+            "tracker.m-team.cc",
+            "tracker.pterclub.com",
+            "daydream.dmhy.best"
           ],
           "outboundTag": "direct"
         },
