@@ -109,7 +109,7 @@ serverList.key('enter', function () {
               port: parseInt(server.port),
               users: [
                 {
-                  flow: server.params.flow,
+                  //flow: server.params.flow,
                   encryption: server.params.encryption,
                   id: server.id,
                   level: 0
@@ -119,9 +119,9 @@ serverList.key('enter', function () {
             }
           ]
           item.streamSettings.network = server.params.type
-          item.streamSettings.xtlsSettings.serverName = server.params.sni
+          item.streamSettings.tlsSettings.serverName = server.params.sni
           item.streamSettings.tcpSettings.header.type = server.params.headerType
-          item.streamSettings.security = server.params.security
+          //item.streamSettings.security = server.params.security
           item.protocol = server.protocol
           break;
         default:

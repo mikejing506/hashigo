@@ -7,7 +7,6 @@
               "port": 443,
               "users": [
                 {
-                  "flow": "xtls-rprx-splice",
                   "encryption": "none",
                   "id": "0",
                   "level": 0
@@ -19,7 +18,7 @@
         },
         "streamSettings": {
           "network": "tcp",
-          "xtlsSettings": {
+          "tlsSettings": {
             "allowInsecure": false,
             "serverName": "example.sub"
           },
@@ -28,7 +27,7 @@
               "type": "none"
             }
           },
-          "security": "xtls"
+          "security": "tls"
         },
         "protocol": "vless",
         "tag": "default"
