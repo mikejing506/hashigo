@@ -1,0 +1,15 @@
+{
+  "sub": [
+    {
+      "name": "example subscribe",
+      "url": "https://example.sub"
+    }
+  ],
+  "templateFile": "./example.json",
+  "targetFile": "/etc/v2ray/config.json",
+  "dns": {
+    "port": 53,
+    "network": "tcp",
+    "address": "8.8.8.8"
+  }
+}

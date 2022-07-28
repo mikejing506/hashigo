@@ -1,0 +1,28 @@
+{
+  "name": "hashigo",
+  "version": "0.0.1",
+  "description": "V2ray/Xray subscribe tool on vyos",
+  "main": "main.js",
+  "scripts": {
+    "test": "ava",
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikejing506/hashigo.git"
+  },
+  "author": "Akira Akimoto",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/mikejing506/hashigo/issues"
+  },
+  "homepage": "https://github.com/mikejing506/hashigo#readme",
+  "devDependencies": {
+    "ava": "^4.3.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0"
+  }
+}
