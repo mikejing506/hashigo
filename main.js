@@ -100,7 +100,9 @@ serverList.key('enter', function () {
   let selected = serverList.getItem(this.selected).content.split(' - ')
   if (selected.length > 1) {
     let template = JSON.parse(fs.readFileSync(config.templateFile));
+    let flag = false;
     template.outbounds.map((item) => {
+      if (flag) return item;
       switch (item.protocol) {
         case 'vless':
           let server = subItems[selected[0]].filter(name => name.name === selected[1])[0]
@@ -118,14 +120,34 @@ serverList.key('enter', function () {
               address: server.address
             }
           ]
+          if (!item.streamSettings)
+            item.streamSettings = {};
           item.streamSettings.network = server.params.type
-          if (item.streamSettings.xtlsSettings)
-            item.streamSettings.xtlsSettings.serverName = server.params.sni
-          if (item.streamSettings.tlsSettings)
-            item.streamSettings.tlsSettings.serverName = server.params.sni
-          item.streamSettings.tcpSettings.header.type = server.params.headerType
           item.streamSettings.security = server.params.security
+
+          let tlsSettings = {
+            allowInsecure: false,
+            serverName: ""
+          };
+          if (item.streamSettings.xtlsSettings) {
+            tlsSettings = item.streamSettings.xtlsSettings;
+          } else if (item.streamSettings.tlsSettings) {
+            tlsSettings = item.streamSettings.tlsSettings;
+          }
+          tlsSettings.serverName = server.params.sni;
+          if (item.streamSettings.security === "xtls")
+            item.streamSettings.xtlsSettings = tlsSettings;
+          else if (item.streamSettings.security === "tls")
+            item.streamSettings.tlsSettings = tlsSettings;
+
+          if (!item.streamSettings.tcpSettings)
+            item.streamSettings.tcpSettings = {};
+          if (!item.streamSettings.tcpSettings.header)
+            item.streamSettings.tcpSettings.header = {};
+          item.streamSettings.tcpSettings.header.type = server.params.headerType
+
           item.protocol = server.protocol
+          flag = true
           break;
         default:
           break;

@@ -1,307 +1,286 @@
 {
-    "outbounds": [
-      {
-        "settings": {
-          "vnext": [
-            {
-              "port": 443,
-              "users": [
-                {
-                  "flow": "xtls-rprx-splice",
-                  "encryption": "none",
-                  "id": "0",
-                  "level": 0
-                }
-              ],
-              "address": "example.sub"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "xtlsSettings": {
-            "allowInsecure": false,
-            "serverName": "example.sub"
-          },
-          "tcpSettings": {
-            "header": {
-              "type": "none"
-            }
-          },
-          "security": "xtls"
-        },
-        "protocol": "vless",
-        "tag": "default"
+  "outbounds": [
+    {
+      "settings": {
+        "vnext": [
+          {
+            "port": 443,
+            "users": [
+              {
+                "flow": "xtls-rprx-vision",
+                "encryption": "none",
+                "id": "a9ea9a553",
+                "level": 0
+              }
+            ],
+            "address": "example.sub"
+          }
+        ]
       },
-      {
-        "settings": {
-          "port": 53,
-          "network": "tcp",
-          "address": "8.8.8.8"
+      "streamSettings": {
+        "network": "tcp",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "serverName": "example.sub"
         },
-        "protocol": "dns",
-        "tag": "dns-out"
-      },
-      {
-        "streamSettings": {
-          "sockopt": {
-            "mark": 255
+        "tcpSettings": {
+          "header": {
+            "type": "none"
           }
         },
-        "settings": {
-          "domainStrategy": "UseIPv4"
-        },
-        "protocol": "freedom",
-        "tag": "direct"
+        "security": "tls"
+      },
+      "protocol": "vless",
+      "tag": "default"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "blackhole"
+    }
+  ],
+  "log": {
+    "loglevel": "error"
+  },
+  "dns": {
+    "disableFallback": false,
+    "queryStrategy": "UseIPv4",
+    "servers": [
+      {
+        "port": 53,
+        "address": "119.29.29.29",
+        "domains": [
+          "geosite:cn",
+          "geosite:xbox@cn"
+        ],
+        "expectIPs": [
+          "geoip:cn"
+        ]
       },
       {
-        "protocol": "blackhole",
-        "tag": "blackhole"
+        "port": 53,
+        "address": "tcp://8.8.8.8:53",
+        "domains": [
+          "geosite:geolocation-!cn"
+        ],
+        "expectIPs": [
+          "geoip:!cn"
+        ]
+      },
+      "tcp://8.8.8.8:53"
+    ],
+    "disableCache": true,
+    "tag": "dns-in1"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": false,
+        "statsUserDownlink": false
+      }
+    }
+  },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": [
+          "dns-in"
+        ],
+        "outboundTag": "dns-out"
+      },
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "dyndns.com",
+          "douyucdn.cn",
+          "douyucdn2.cn",
+          "steamcontent.com",
+          "dl.steam.clngaa.com",
+          "dl.steam.ksyna.com",
+          "st.dl.bscstorage.net",
+          "st.dl.eccdnx.com",
+          "st.dl.pinyuncloud.com",
+          "cdn.mileweb.cs.steampowered.com.8686c.com",
+          "cdn-ws.content.steamchina.com",
+          "cdn-qc.content.steamchina.com",
+          "cdn-ali.content.steamchina.com",
+          "epicgames-download1-1251447533.file.myqcloud.com",
+          "cm.steampowered.com",
+          "steamcdn-a.akamaihd.net",
+          "steinberg.net",
+          "yuanshen.com",
+          "mihoyo.com",
+          "geosite:icloud",
+          "geosite:playstation",
+          "geosite:amazon@cn",
+          "geosite:xbox@cn"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "bing.com",
+          "sspanel.net",
+          "v2ex.com",
+          "geosite:google",
+          "geosite:github",
+          "geosite:apple",
+          "geosite:xbox",
+          "geosite:microsoft",
+          "geosite:onedrive",
+          "geosite:amazon",
+          "domain:jsdelivr.net"
+        ],
+        "outboundTag": "default"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "geoip:cn"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "default",
+        "port": 53,
+        "inboundTag": [
+          "dns-in1"
+        ],
+        "ip": [
+          "8.8.8.8"
+        ]
+      },
+      {
+        "type": "field",
+        "network": "tcp,udp",
+        "outboundTag": "default"
       }
     ],
-    "log": {
-      "loglevel": "error"
-    },
-    "dns": {
-      "disableFallback": false,
-      "queryStrategy": "UseIPv4",
-      "servers": [
-	  {
-		  "port": 53,
-		  "address": "119.29.29.29",
-		  "domains": [
-		      "geosite:cn"
-		  ],
-		  "expectIPs": [
-		      "geoip:cn"
-		  ]
-	  },
-        {
-          "port": 53,
-          "address": "tcp:\/\/8.8.8.8:53",
-		  "domains": [
-		      "geosite:geolocation-!cn"
-		  ],
-		  "expectIPs": [
-		      "geoip:!cn"
-		  ]
-        },
-		"tcp:\/\/8.8.8.8:53"
-      ],
-      "disableCache": true,
-      "tag": "dns-in1"
-    },
-    "policy": {
-      "levels": {
-        "0": {
-          "statsUserUplink": false,
-          "statsUserDownlink": false
-        }
-      }
-    },
-    "routing": {
-      "domainStrategy": "IPOnDemand",
-      "rules": [
-        {
-          "type": "field",
-          "inboundTag": [
-            "dns-in"
-          ],
-          "outboundTag": "dns-out"
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "domain": [
-            "dyndns.com",
-            "douyucdn.cn",
-            "douyucdn2.cn",
-            "steamcontent.com",
-            "dl.steam.clngaa.com",
-            "dl.steam.ksyna.com",
-            "st.dl.bscstorage.net",
-            "st.dl.eccdnx.com",
-            "st.dl.pinyuncloud.com",
-            "cdn.mileweb.cs.steampowered.com.8686c.com",
-            "cdn-ws.content.steamchina.com",
-            "cdn-qc.content.steamchina.com",
-            "cdn-ali.content.steamchina.com",
-            "epicgames-download1-1251447533.file.myqcloud.com",
-            "cm.steampowered.com",
-            "steamcdn-a.akamaihd.net",
-            "steinberg.net",
-            "yuanshen.com",
-            "mihoyo.com",
-            "geosite:icloud",
-            "geosite:playstation",
-            "geosite:amazon@cn",
-            "geosite:xbox@cn"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "domain": [
-            "bing.com",
-            "sspanel.net",
-            "v2ex.com",
-            "geosite:google",
-            "geosite:github",
-            "geosite:apple",
-            "geosite:xbox",
-            "geosite:microsoft",
-            "geosite:onedrive",
-            "geosite:amazon",
-            "domain:jsdelivr.net"
-          ],
-          "outboundTag": "default"
-        },
-        {
-          "type": "field",
-          "domain": [
-            "geosite:cn"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "ip": [
-            "geoip:cn"
-          ],
-          "type": "field",
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "outboundTag": "default",
-          "port": 53,
-          "inboundTag": [
-            "dns-in1"
-          ],
-          "ip": [
-            "8.8.8.8"
-          ]
-        },
-        {
-          "type": "field",
-          "network": "tcp,udp",
-          "outboundTag": "default"
-        }
-      ],
-      "domainMatcher": "mph"
-    },
-    "inbounds": [
-      {
-        "sniffing": {
-          "enabled": true,
-          "domainsExcluded": [
-            "courier.push.apple.com",
-            "rbsxbxp-mim.vivox.com",
-            "rbsxbxp.www.vivox.com",
-            "rbsxbxp-ws.vivox.com",
-            "rbspsxp.www.vivox.com",
-            "rbspsxp-mim.vivox.com",
-            "rbspsxp-ws.vivox.com",
-            "rbswxp.www.vivox.com",
-            "rbswxp-mim.vivox.com",
-            "disp-rbspsp-5-1.vivox.com",
-            "disp-rbsxbp-5-1.vivox.com",
-            "proxy.rbsxbp.vivox.com",
-            "proxy.rbspsp.vivox.com",
-            "proxy.rbswp.vivox.com",
-            "rbswp.vivox.com",
-            "rbsxbp.vivox.com",
-            "rbspsp.vivox.com",
-            "rbspsp.www.vivox.com",
-            "rbswp.www.vivox.com",
-            "rbsxbp.www.vivox.com",
-            "rbsxbxp.vivox.com",
-            "rbspsxp.vivox.com",
-            "rbswxp.vivox.com",
-            "Mijia Cloud"
-          ],
-          "destOverride": [
-            "http",
-            "tls"
-          ],
-          "metadataOnly": false
-        },
-        "settings": {
-          "network": "tcp",
-          "followRedirect": true
-        },
-        "streamSettings": {
-          "sockopt": {
-            "tproxy": "tproxy"
-          }
-        },
-        "port": 1041,
-        "protocol": "dokodemo-door",
-        "tag": "tcp_redir"
+    "domainMatcher": "mph"
+  },
+  "inbounds": [
+    {
+      "sniffing": {
+        "enabled": true,
+        "domainsExcluded": [
+          "courier.push.apple.com",
+          "rbsxbxp-mim.vivox.com",
+          "rbsxbxp.www.vivox.com",
+          "rbsxbxp-ws.vivox.com",
+          "rbspsxp.www.vivox.com",
+          "rbspsxp-mim.vivox.com",
+          "rbspsxp-ws.vivox.com",
+          "rbswxp.www.vivox.com",
+          "rbswxp-mim.vivox.com",
+          "disp-rbspsp-5-1.vivox.com",
+          "disp-rbsxbp-5-1.vivox.com",
+          "proxy.rbsxbp.vivox.com",
+          "proxy.rbspsp.vivox.com",
+          "proxy.rbswp.vivox.com",
+          "rbswp.vivox.com",
+          "rbsxbp.vivox.com",
+          "rbspsp.vivox.com",
+          "rbspsp.www.vivox.com",
+          "rbswp.www.vivox.com",
+          "rbsxbp.www.vivox.com",
+          "rbsxbxp.vivox.com",
+          "rbspsxp.vivox.com",
+          "rbswxp.vivox.com",
+          "Mijia Cloud"
+        ],
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false
       },
-      {
-        "sniffing": {
-          "enabled": true,
-          "domainsExcluded": [
-            "courier.push.apple.com",
-            "rbsxbxp-mim.vivox.com",
-            "rbsxbxp.www.vivox.com",
-            "rbsxbxp-ws.vivox.com",
-            "rbspsxp.www.vivox.com",
-            "rbspsxp-mim.vivox.com",
-            "rbspsxp-ws.vivox.com",
-            "rbswxp.www.vivox.com",
-            "rbswxp-mim.vivox.com",
-            "disp-rbspsp-5-1.vivox.com",
-            "disp-rbsxbp-5-1.vivox.com",
-            "proxy.rbsxbp.vivox.com",
-            "proxy.rbspsp.vivox.com",
-            "proxy.rbswp.vivox.com",
-            "rbswp.vivox.com",
-            "rbsxbp.vivox.com",
-            "rbspsp.vivox.com",
-            "rbspsp.www.vivox.com",
-            "rbswp.www.vivox.com",
-            "rbsxbp.www.vivox.com",
-            "rbsxbxp.vivox.com",
-            "rbspsxp.vivox.com",
-            "rbswxp.vivox.com",
-            "Mijia Cloud"
-          ],
-          "destOverride": [
-            "http",
-            "tls"
-          ],
-          "metadataOnly": false
-        },
-        "settings": {
-          "network": "udp",
-          "followRedirect": true
-        },
-        "streamSettings": {
-          "sockopt": {
-            "tproxy": "tproxy"
-          }
-        },
-        "port": 1041,
-        "protocol": "dokodemo-door",
-        "tag": "udp_redir"
+      "settings": {
+        "network": "tcp",
+        "followRedirect": true
       },
-      {
-        "port": 15353,
-        "protocol": "dokodemo-door",
-        "settings": {
-          "port": 53,
-          "network": "tcp,udp",
-          "address": "8.8.8.8"
-        },
-        "tag": "dns-in"
-      }
-    ]
-  }
-  
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      },
+      "port": 1041,
+      "protocol": "dokodemo-door",
+      "tag": "tcp_redir"
+    },
+    {
+      "sniffing": {
+        "enabled": true,
+        "domainsExcluded": [
+          "courier.push.apple.com",
+          "rbsxbxp-mim.vivox.com",
+          "rbsxbxp.www.vivox.com",
+          "rbsxbxp-ws.vivox.com",
+          "rbspsxp.www.vivox.com",
+          "rbspsxp-mim.vivox.com",
+          "rbspsxp-ws.vivox.com",
+          "rbswxp.www.vivox.com",
+          "rbswxp-mim.vivox.com",
+          "disp-rbspsp-5-1.vivox.com",
+          "disp-rbsxbp-5-1.vivox.com",
+          "proxy.rbsxbp.vivox.com",
+          "proxy.rbspsp.vivox.com",
+          "proxy.rbswp.vivox.com",
+          "rbswp.vivox.com",
+          "rbsxbp.vivox.com",
+          "rbspsp.vivox.com",
+          "rbspsp.www.vivox.com",
+          "rbswp.www.vivox.com",
+          "rbsxbp.www.vivox.com",
+          "rbsxbxp.vivox.com",
+          "rbspsxp.vivox.com",
+          "rbswxp.vivox.com",
+          "Mijia Cloud"
+        ],
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false
+      },
+      "settings": {
+        "network": "udp",
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      },
+      "port": 1041,
+      "protocol": "dokodemo-door",
+      "tag": "udp_redir"
+    },
+    {
+      "port": 15353,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "port": 53,
+        "network": "tcp,udp",
+        "address": "8.8.8.8"
+      },
+      "tag": "dns-in"
+    }
+  ]
+}
